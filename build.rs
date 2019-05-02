@@ -9,6 +9,7 @@ fn main() {
     // shared library.
     println!("cargo:rustc-link-search=native={}", out_dir);
     println!("cargo:rustc-link-lib=dylib=newrelic");
+    println!("cargo:rustc-link-lib=dylib=pcre");
 
     Command::new("make")
         .arg("dynamic")
