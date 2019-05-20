@@ -8,18 +8,18 @@ fn main() {
     // Tell cargo to tell rustc where to find the nr_agent_sdk
     // shared library.
     println!("cargo:rustc-link-search=native={}", out_dir);
-    println!("cargo:rustc-link-lib=dylib=newrelic");
+    println!("cargo:rustc-link-lib=static=newrelic");
     println!("cargo:rustc-link-lib=dylib=pcre");
 
     Command::new("make")
-        .arg("dynamic")
+        .arg("static")
         .current_dir(vendor_path.clone())
         .status()
         .expect("Running 'make' failed. Ensure your environment meets the minimum requirements to build the New Relic C SDK: https://github.com/newrelic/c-sdk#requirements");
 
     // Copy the object files into the $OUT_DIR directory to be linked against.
     let mut obj = vendor_path.clone();
-    obj.push("libnewrelic.so");
+    obj.push("libnewrelic.a");
     println!("{:?}", obj);
-    fs::copy(obj, format!("{}/libnewrelic.so", out_dir)).expect("Could not copy object files");
+    fs::copy(obj, format!("{}/libnewrelic.a", out_dir)).expect("Could not copy object files");
 }
