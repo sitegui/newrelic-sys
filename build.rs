@@ -1,6 +1,7 @@
 use std::{env, fs, path::PathBuf, process::Command};
 
 const VENDOR_DIR: &str = "./vendor";
+const LIBRARY_NAME: &str = "libnewrelic.a";
 
 fn main() {
     let vendor_path = PathBuf::from(VENDOR_DIR);
@@ -19,7 +20,13 @@ fn main() {
 
     // Copy the object files into the $OUT_DIR directory to be linked against.
     let mut obj = vendor_path.clone();
-    obj.push("libnewrelic.a");
+    obj.push(LIBRARY_NAME);
     println!("{:?}", obj);
-    fs::copy(obj, format!("{}/libnewrelic.a", out_dir)).expect("Could not copy object files");
+    fs::copy(&obj, format!("{}/{}", out_dir, LIBRARY_NAME)).expect("Could not copy object files");
+
+    Command::new("make")
+        .arg("clean")
+        .current_dir(vendor_path.clone())
+        .status()
+        .expect("Could not clean up package directory");
 }
