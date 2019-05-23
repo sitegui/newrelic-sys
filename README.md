@@ -9,7 +9,7 @@ Rust bindings to the [New Relic C SDK].
 Requirements
 ------------
 
-Building this library requires all the same [requirements] as the C-SDK.
+Building this library requires all the same [requirements] as the C-SDK. This library will _not_ currently link against musl, due to a few missing symbols (at least `qsort_r` and `backtrace`) - help would be appreciated in getting that to work!
 
 Updating
 --------
