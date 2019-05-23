@@ -1,9 +1,14 @@
 [package]
 name = "newrelic-sys"
+description = """
+FFI bindings for the New Relic C SDK.
+"""
 links = "newrelic"
 version = "0.1.0"
 authors = ["Ben Sully <ben@bsull.io>"]
 categories = ["external-ffi-bindings"]
 edition = "2018"
+repository = "https://github.com/sd2k/newrelic-sys"
 
-[dependencies]
+[badges]
+maintenance = { status = "passively-maintained" }
