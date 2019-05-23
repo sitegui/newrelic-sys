@@ -2,7 +2,8 @@
 name = "newrelic-sys"
 links = "newrelic"
 version = "0.1.0"
-authors = ["Ben Sully <ben.sully@yougov.com>"]
+authors = ["Ben Sully <ben@bsull.io>"]
+categories = ["external-ffi-bindings"]
 edition = "2018"
 
 [dependencies]
