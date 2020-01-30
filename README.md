@@ -19,6 +19,8 @@ The Makefile included in this repository includes a `bindings` target. This requ
     git submodule update
     make bindings
 
+The latest bindings were generated using bindgen v0.5.2.
+
 [New Relic C SDK]: https://github.com/newrelic/c-sdk
 [requirements]: https://github.com/newrelic/c-sdk#requirements
 [bindgen]: https://rust-lang.github.io/rust-bindgen
