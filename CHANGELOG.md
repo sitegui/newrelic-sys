@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-01-30
+
 ### Changed
 
 - Upgrade to v1.3.0 of the C SDK (from [@bobbyrward](https://github.com/bobbyrward))
@@ -17,5 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First version of the crate.
 
-[unreleased]: https://github.com/sd2k/newrelic-sys/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/sd2k/newrelic-sys/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/sd2k/newrelic-sys/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/sd2k/newrelic-sys/releases/tag/v0.1.0
