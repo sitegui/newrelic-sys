@@ -4,7 +4,7 @@ description = """
 FFI bindings for the New Relic C SDK.
 """
 links = "newrelic"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Ben Sully <ben@bsull.io>"]
 categories = ["external-ffi-bindings"]
 edition = "2018"

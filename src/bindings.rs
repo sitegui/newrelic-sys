@@ -30,7 +30,7 @@ pub const __STDC_IEC_559_COMPLEX__: u32 = 1;
 pub const __STDC_ISO_10646__: u32 = 201706;
 pub const __GNU_LIBRARY__: u32 = 6;
 pub const __GLIBC__: u32 = 2;
-pub const __GLIBC_MINOR__: u32 = 29;
+pub const __GLIBC_MINOR__: u32 = 30;
 pub const _SYS_CDEFS_H: u32 = 1;
 pub const __glibc_c99_flexarr_available: u32 = 1;
 pub const __WORDSIZE: u32 = 64;
@@ -102,6 +102,15 @@ pub const NEWRELIC_DATASTORE_MONGODB: &'static [u8; 8usize] = b"MongoDB\0";
 pub const NEWRELIC_DATASTORE_ODBC: &'static [u8; 5usize] = b"ODBC\0";
 pub const NEWRELIC_DATASTORE_REDIS: &'static [u8; 6usize] = b"Redis\0";
 pub const NEWRELIC_DATASTORE_OTHER: &'static [u8; 6usize] = b"Other\0";
+pub const NEWRELIC_TRANSPORT_TYPE_UNKNOWN: &'static [u8; 8usize] = b"Unknown\0";
+pub const NEWRELIC_TRANSPORT_TYPE_HTTP: &'static [u8; 5usize] = b"HTTP\0";
+pub const NEWRELIC_TRANSPORT_TYPE_HTTPS: &'static [u8; 6usize] = b"HTTPS\0";
+pub const NEWRELIC_TRANSPORT_TYPE_KAFKA: &'static [u8; 6usize] = b"Kafka\0";
+pub const NEWRELIC_TRANSPORT_TYPE_JMS: &'static [u8; 4usize] = b"JMS\0";
+pub const NEWRELIC_TRANSPORT_TYPE_IRONMQ: &'static [u8; 7usize] = b"IronMQ\0";
+pub const NEWRELIC_TRANSPORT_TYPE_AMQP: &'static [u8; 5usize] = b"AMQP\0";
+pub const NEWRELIC_TRANSPORT_TYPE_QUEUE: &'static [u8; 6usize] = b"Queue\0";
+pub const NEWRELIC_TRANSPORT_TYPE_OTHER: &'static [u8; 6usize] = b"Other\0";
 pub type __u_char = ::std::os::raw::c_uchar;
 pub type __u_short = ::std::os::raw::c_ushort;
 pub type __u_int = ::std::os::raw::c_uint;
@@ -214,7 +223,7 @@ pub type uintmax_t = __uintmax_t;
 pub struct _nr_app_and_info_t {
     _unused: [u8; 0],
 }
-#[doc = " @brief A New Relic application.  Once an application configuration is"]
+#[doc = " @brief A New Relic application. Once an application configuration is"]
 #[doc = " created with newrelic_create_app_config(), call newrelic_create_app()"]
 #[doc = " to create an application to report data to the daemon; the daemon,"]
 #[doc = " in turn, reports data to New Relic."]
@@ -226,16 +235,19 @@ pub type newrelic_app_t = _nr_app_and_info_t;
 pub struct _newrelic_txn_t {
     _unused: [u8; 0],
 }
-#[doc = " @brief A New Relic transaction. A transaction is started using"]
-#[doc = " newrelic_start_web_transaction() or"]
+#[doc = " @brief A New Relic transaction."]
+#[doc = ""]
+#[doc = " A transaction is started using newrelic_start_web_transaction() or"]
 #[doc = " newrelic_start_non_web_transaction(). A started, or active, transaction is"]
 #[doc = " stopped using newrelic_end_transaction(). One may modify a transaction"]
 #[doc = " by adding custom attributes or recording errors only after it has been"]
 #[doc = " started."]
 pub type newrelic_txn_t = _newrelic_txn_t;
-#[doc = " @brief A time, measured in microseconds.  C SDK configuration and API"]
-#[doc = " calls with time-related parameters expect this type.  For an example"]
-#[doc = " configuration, see newrelic_transaction_tracer_config_t."]
+#[doc = " @brief A time, measured in microseconds."]
+#[doc = ""]
+#[doc = " C SDK configuration and API calls with time-related parameters expect this"]
+#[doc = " type. For an example configuration, see"]
+#[doc = " newrelic_transaction_tracer_config_t."]
 pub type newrelic_time_us_t = u64;
 #[doc = " The highest-priority loglevel; only errors are logged."]
 pub const _newrelic_loglevel_t_NEWRELIC_LOG_ERROR: _newrelic_loglevel_t = 0;
@@ -245,29 +257,30 @@ pub const _newrelic_loglevel_t_NEWRELIC_LOG_WARNING: _newrelic_loglevel_t = 1;
 pub const _newrelic_loglevel_t_NEWRELIC_LOG_INFO: _newrelic_loglevel_t = 2;
 #[doc = " The highest-verbosity loglevel."]
 pub const _newrelic_loglevel_t_NEWRELIC_LOG_DEBUG: _newrelic_loglevel_t = 3;
-#[doc = " @brief Log levels.  An enumeration of the possible log levels for an SDK"]
-#[doc = " configuration, or newrelic_app_config_t.  The highest priority loglevel"]
-#[doc = " is NEWRELIC_LOG_ERROR.  The level NEWRELIC_LOG_DEBUG offers the greatest"]
-#[doc = " verbosity."]
+#[doc = " @brief Log levels."]
+#[doc = ""]
+#[doc = " An enumeration of the possible log levels for an SDK configuration, or"]
+#[doc = " newrelic_app_config_t. The highest priority loglevel is NEWRELIC_LOG_ERROR."]
+#[doc = " The level NEWRELIC_LOG_DEBUG offers the greatest verbosity."]
 #[doc = ""]
 #[doc = " @see newrelic_app_config_t"]
 pub type _newrelic_loglevel_t = u32;
 pub use self::_newrelic_loglevel_t as newrelic_loglevel_t;
 #[doc = " When the record_sql field of the newrelic_transaction_tracer_config_t"]
-#[doc = "  is set to NEWRELIC_SQL_OFF, no queries are reported to New Relic."]
+#[doc = " is set to NEWRELIC_SQL_OFF, no queries are reported to New Relic."]
 pub const _newrelic_tt_recordsql_t_NEWRELIC_SQL_OFF: _newrelic_tt_recordsql_t = 0;
 #[doc = " For the SQL-like datastores which are supported by the C SDK, when the"]
-#[doc = "  record_sql field of the newrelic_transaction_tracer_config_t is set"]
-#[doc = "  to NEWRELIC_SQL_RAW the query param of the"]
-#[doc = "  newrelic_datastore_segment_config_t is reported as-is to New Relic."]
+#[doc = " record_sql field of the newrelic_transaction_tracer_config_t is set"]
+#[doc = " to NEWRELIC_SQL_RAW the query param of the"]
+#[doc = " newrelic_datastore_segment_config_t is reported as-is to New Relic."]
 #[doc = ""]
-#[doc = "  @warning This setting is not recommended."]
+#[doc = " @warning This setting is not recommended."]
 pub const _newrelic_tt_recordsql_t_NEWRELIC_SQL_RAW: _newrelic_tt_recordsql_t = 1;
 #[doc = " For the SQL-like datastores which are supported by the C SDK, when the"]
-#[doc = "  record_sql field of the newrelic_transaction_tracer_config_t is set"]
-#[doc = "  to NEWRELIC_SQL_RAW the query param of the"]
-#[doc = "  newrelic_datastore_segment_config_t is reported to New Relic with"]
-#[doc = "  alphanumeric characters set to \'?\'"]
+#[doc = " record_sql field of the newrelic_transaction_tracer_config_t is set"]
+#[doc = " to NEWRELIC_SQL_RAW the query param of the"]
+#[doc = " newrelic_datastore_segment_config_t is reported to New Relic with"]
+#[doc = " alphanumeric characters set to '?'."]
 pub const _newrelic_tt_recordsql_t_NEWRELIC_SQL_OBFUSCATED: _newrelic_tt_recordsql_t = 2;
 #[doc = " @brief Configuration values used to configure how SQL queries"]
 #[doc = " are recorded and reported to New Relic."]
@@ -276,83 +289,84 @@ pub const _newrelic_tt_recordsql_t_NEWRELIC_SQL_OBFUSCATED: _newrelic_tt_records
 pub type _newrelic_tt_recordsql_t = u32;
 pub use self::_newrelic_tt_recordsql_t as newrelic_tt_recordsql_t;
 #[doc = " Use 4*apdex(T) as the minimum time a transaction must take before it is"]
-#[doc = "  eligible for a transaction trace."]
+#[doc = " eligible for a transaction trace."]
 pub const _newrelic_transaction_tracer_threshold_t_NEWRELIC_THRESHOLD_IS_APDEX_FAILING:
     _newrelic_transaction_tracer_threshold_t = 0;
 #[doc = " Use the value given in the duration_us field as the minimum time a"]
-#[doc = "  transaction must take before it is eligible for a transaction trace."]
+#[doc = " transaction must take before it is eligible for a transaction trace."]
 pub const _newrelic_transaction_tracer_threshold_t_NEWRELIC_THRESHOLD_IS_OVER_DURATION:
     _newrelic_transaction_tracer_threshold_t = 1;
 #[doc = " @brief Configuration values used to configure the behaviour of the"]
 #[doc = " transaction tracer."]
 #[doc = ""]
-#[doc = "  @see newrelic_transaction_tracer_config_t"]
+#[doc = " @see newrelic_transaction_tracer_config_t"]
 pub type _newrelic_transaction_tracer_threshold_t = u32;
 pub use self::_newrelic_transaction_tracer_threshold_t as newrelic_transaction_tracer_threshold_t;
 #[doc = " @brief Configuration used to configure transaction tracing."]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _newrelic_transaction_tracer_config_t {
-    #[doc = "  @brief Whether to enable transaction traces."]
+    #[doc = " @brief Whether to enable transaction traces."]
     #[doc = ""]
-    #[doc = "  Default: true."]
+    #[doc = " Default: true."]
     pub enabled: bool,
-    #[doc = "  @brief Whether to consider transactions for trace generation based on the apdex"]
-    #[doc = "  configuration or a specific duration."]
+    #[doc = " @brief Whether to consider transactions for trace generation based on the"]
+    #[doc = " apdex configuration or a specific duration."]
     #[doc = ""]
-    #[doc = "  Default: NEWRELIC_THRESHOLD_IS_APDEX_FAILING."]
+    #[doc = " Default: NEWRELIC_THRESHOLD_IS_APDEX_FAILING."]
     pub threshold: newrelic_transaction_tracer_threshold_t,
-    #[doc = "  @brief If the SDK configuration threshold is set to"]
-    #[doc = "  NEWRELIC_THRESHOLD_IS_OVER_DURATION, this field specifies the minimum"]
-    #[doc = "  transaction time before a trace may be generated, in microseconds."]
+    #[doc = " @brief If the SDK configuration threshold is set to"]
+    #[doc = " NEWRELIC_THRESHOLD_IS_OVER_DURATION, this field specifies the minimum"]
+    #[doc = " transaction time before a trace may be generated, in microseconds."]
     #[doc = ""]
-    #[doc = "  Default: 0."]
+    #[doc = " Default: 0."]
     pub duration_us: newrelic_time_us_t,
-    #[doc = "  @brief Sets the threshold above which the New Relic SDK will record a"]
-    #[doc = "  stack trace for a transaction trace, in microseconds."]
+    #[doc = " @brief Sets the threshold above which the New Relic SDK will record a"]
+    #[doc = " stack trace for a transaction trace, in microseconds."]
     #[doc = ""]
-    #[doc = "  Default: 500000, or 0.5 seconds."]
+    #[doc = " Default: 500000, or 0.5 seconds."]
     pub stack_trace_threshold_us: newrelic_time_us_t,
     pub datastore_reporting: _newrelic_transaction_tracer_config_t__bindgen_ty_1,
 }
-#[doc = "  @brief The datastore_reporting field of newrelic_transaction_tracer_config_t"]
-#[doc = "  is a collection of configuration values that control how certain"]
-#[doc = "  characteristics of datastore queries are recorded."]
+#[doc = " @brief The datastore_reporting field of"]
+#[doc = " newrelic_transaction_tracer_config_t is a collection of configuration"]
+#[doc = " values that control how certain characteristics of datastore queries are"]
+#[doc = " recorded."]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _newrelic_transaction_tracer_config_t__bindgen_ty_1 {
-    #[doc = "  @brief Controls whether slow datastore queries are recorded."]
+    #[doc = " @brief Controls whether slow datastore queries are recorded."]
     #[doc = ""]
-    #[doc = "  If set to true for a transaction, the transaction tracer records"]
-    #[doc = "  the top-10 slowest queries along with a stack trace of where the"]
-    #[doc = "  call occurred."]
+    #[doc = " If set to true for a transaction, the transaction tracer records"]
+    #[doc = " the top-10 slowest queries along with a stack trace of where the"]
+    #[doc = " call occurred."]
     #[doc = ""]
-    #[doc = "  Default: true."]
+    #[doc = " Default: true."]
     pub enabled: bool,
-    #[doc = "  @brief Controls the format of the sql put into transaction traces for"]
-    #[doc = "  supported sql-like products."]
+    #[doc = " @brief Controls the format of the sql put into transaction traces for"]
+    #[doc = " supported sql-like products."]
     #[doc = ""]
-    #[doc = "  Only relevant if the datastore_reporting.enabled field is set to true."]
+    #[doc = " Only relevant if the datastore_reporting.enabled field is set to true."]
     #[doc = ""]
-    #[doc = "  - If set to NEWRELIC_SQL_OFF, transaction traces have no sql in them."]
-    #[doc = "  - If set to NEWRELIC_SQL_RAW, the sql is added to the transaction"]
-    #[doc = "    trace as-is."]
-    #[doc = "  - If set to NEWRELIC_SQL_OBFUSCATED, alphanumeric characters are set"]
-    #[doc = "    to \'?\'. For example \'SELECT * FROM table WHERE foo = 42\' is reported"]
-    #[doc = "    as \'SELECT * FROM table WHERE foo = ?\'.  These obfuscated queries are"]
-    #[doc = "    added to the transaction trace for supported datastore products."]
+    #[doc = " - If set to NEWRELIC_SQL_OFF, transaction traces have no sql in them."]
+    #[doc = " - If set to NEWRELIC_SQL_RAW, the sql is added to the transaction"]
+    #[doc = "   trace as-is."]
+    #[doc = " - If set to NEWRELIC_SQL_OBFUSCATED, alphanumeric characters are set"]
+    #[doc = "   to '?'. For example 'SELECT * FROM table WHERE foo = 42' is reported"]
+    #[doc = "   as 'SELECT * FROM table WHERE foo = ?'. These obfuscated queries are"]
+    #[doc = "   added to the transaction trace for supported datastore products."]
     #[doc = ""]
-    #[doc = "  @warning New Relic highly discourages the use of the NEWRELIC_SQL_RAW setting"]
-    #[doc = "  in production environments."]
+    #[doc = " @warning New Relic highly discourages the use of the NEWRELIC_SQL_RAW"]
+    #[doc = " setting in production environments."]
     #[doc = ""]
-    #[doc = "  Default: NEWRELIC_SQL_OBFUSCATED."]
+    #[doc = " Default: NEWRELIC_SQL_OBFUSCATED."]
     pub record_sql: newrelic_tt_recordsql_t,
-    #[doc = "  @brief Specify the threshold above which a datastore query is considered"]
-    #[doc = "  \"slow\", in microseconds."]
+    #[doc = " @brief Specify the threshold above which a datastore query is considered"]
+    #[doc = " \"slow\", in microseconds."]
     #[doc = ""]
-    #[doc = "  Only relevant if the datastore_reporting.enabled field is set to true."]
+    #[doc = " Only relevant if the datastore_reporting.enabled field is set to true."]
     #[doc = ""]
-    #[doc = "  Default: 500000, or 0.5 seconds."]
+    #[doc = " Default: 500000, or 0.5 seconds."]
     pub threshold_us: newrelic_time_us_t,
 }
 #[test]
@@ -504,22 +518,22 @@ pub type newrelic_transaction_tracer_config_t = _newrelic_transaction_tracer_con
 #[derive(Debug, Copy, Clone)]
 pub struct _newrelic_datastore_segment_config_t {
     #[doc = " @brief Configuration which controls whether datastore instance"]
-    #[doc = "  names are reported to New Relic."]
+    #[doc = " names are reported to New Relic."]
     #[doc = ""]
     #[doc = " If set to true for a transaction, instance names are reported to New"]
     #[doc = " Relic. More specifically, the host and port_path_or_id fields in a"]
-    #[doc = "  newrelic_datastore_segment_params_t passed to"]
-    #[doc = "  newrelic_datastore_start_segment() is reported when the"]
-    #[doc = "  corresponding transaction is reported."]
+    #[doc = " newrelic_datastore_segment_params_t passed to"]
+    #[doc = " newrelic_datastore_start_segment() is reported when the"]
+    #[doc = " corresponding transaction is reported."]
     pub instance_reporting: bool,
     #[doc = " @brief Configuration which controls whether datastore database"]
-    #[doc = "  names are reported to New Relic."]
+    #[doc = " names are reported to New Relic."]
     #[doc = ""]
-    #[doc = "  If set to true for a transaction, database names are reported to New"]
-    #[doc = "  Relic. More specifically, the database_name field in a"]
-    #[doc = "  newrelic_datastore_segment_params_t passed to"]
-    #[doc = "  newrelic_datastore_start_segment() is reported when the"]
-    #[doc = "  corresponding transaction is reported."]
+    #[doc = " If set to true for a transaction, database names are reported to New"]
+    #[doc = " Relic. More specifically, the database_name field in a"]
+    #[doc = " newrelic_datastore_segment_params_t passed to"]
+    #[doc = " newrelic_datastore_start_segment() is reported when the"]
+    #[doc = " corresponding transaction is reported."]
     pub database_name_reporting: bool,
 }
 #[test]
@@ -568,56 +582,89 @@ fn bindgen_test_layout__newrelic_datastore_segment_config_t() {
     );
 }
 pub type newrelic_datastore_segment_config_t = _newrelic_datastore_segment_config_t;
-#[doc = " @brief Optional configuration for the underlying communication mechanism"]
-#[doc = " between an instrumented application and the daemon. The default is to use"]
-#[doc = " a UNIX-domain socket located at /tmp/.newrelic.sock. If this default works"]
-#[doc = " for your system, creating this configuration is not necessary."]
+#[doc = " @brief Configuration used for distributed tracing."]
+#[doc = ""]
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct _newrelic_process_config_t {
-    #[doc = "  @brief Specify the communication mechanism by setting daemon_socket to a"]
-    #[doc = "  socket name."]
+#[derive(Debug, Copy, Clone)]
+pub struct _newrelic_distributed_tracing_config_t {
+    #[doc = " @brief Specifies whether or not distributed tracing is enabled."]
     #[doc = ""]
-    #[doc = "  Domain Sockets: If you want to use UNIX domain sockets as the underlying"]
-    #[doc = "  communication mechanism, the name assigned to daemon_socket"]
-    #[doc = "  must begin with a \"/\", e.g., \"/domain_socket\"."]
-    #[doc = ""]
-    #[doc = "  TCP Socket: If you want to use a normal TCP socket, set daemon_socket"]
-    #[doc = "  to an integer value in the range 1-65534.  This instructs the daemon"]
-    #[doc = "  to listen on a normal TCP socket on the port specified."]
-    #[doc = ""]
-    #[doc = "  Abstract Socket: If you want to use an abstract socket, the name"]
-    #[doc = "  assigned to daemon_socket must begin with a \"@\","]
-    #[doc = "  e.g., \"@abstract_socket\"."]
-    pub daemon_socket: [::std::os::raw::c_char; 512usize],
+    #[doc = " When set to true, distributed tracing is enabled for the C SDK. The"]
+    #[doc = " default configuration returned by newrelic_create_app_config() sets"]
+    #[doc = " this value to false."]
+    pub enabled: bool,
 }
 #[test]
-fn bindgen_test_layout__newrelic_process_config_t() {
+fn bindgen_test_layout__newrelic_distributed_tracing_config_t() {
     assert_eq!(
-        ::std::mem::size_of::<_newrelic_process_config_t>(),
-        512usize,
-        concat!("Size of: ", stringify!(_newrelic_process_config_t))
+        ::std::mem::size_of::<_newrelic_distributed_tracing_config_t>(),
+        1usize,
+        concat!(
+            "Size of: ",
+            stringify!(_newrelic_distributed_tracing_config_t)
+        )
     );
     assert_eq!(
-        ::std::mem::align_of::<_newrelic_process_config_t>(),
+        ::std::mem::align_of::<_newrelic_distributed_tracing_config_t>(),
         1usize,
-        concat!("Alignment of ", stringify!(_newrelic_process_config_t))
+        concat!(
+            "Alignment of ",
+            stringify!(_newrelic_distributed_tracing_config_t)
+        )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_newrelic_process_config_t>())).daemon_socket as *const _
+            &(*(::std::ptr::null::<_newrelic_distributed_tracing_config_t>())).enabled as *const _
                 as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_newrelic_process_config_t),
+            stringify!(_newrelic_distributed_tracing_config_t),
             "::",
-            stringify!(daemon_socket)
+            stringify!(enabled)
         )
     );
 }
-pub type newrelic_process_config_t = _newrelic_process_config_t;
+pub type newrelic_distributed_tracing_config_t = _newrelic_distributed_tracing_config_t;
+#[doc = " @brief Configuration used for span events."]
+#[doc = ""]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _newrelic_span_event_config_t {
+    #[doc = " @brief Specifies whether or not span events are generated."]
+    #[doc = ""]
+    #[doc = " When set to true, span events are generated by the C SDK. The default"]
+    #[doc = " configuration returned by newrelic_create_app_config() sets this value"]
+    #[doc = " to true."]
+    pub enabled: bool,
+}
+#[test]
+fn bindgen_test_layout__newrelic_span_event_config_t() {
+    assert_eq!(
+        ::std::mem::size_of::<_newrelic_span_event_config_t>(),
+        1usize,
+        concat!("Size of: ", stringify!(_newrelic_span_event_config_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_newrelic_span_event_config_t>(),
+        1usize,
+        concat!("Alignment of ", stringify!(_newrelic_span_event_config_t))
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<_newrelic_span_event_config_t>())).enabled as *const _ as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_newrelic_span_event_config_t),
+            "::",
+            stringify!(enabled)
+        )
+    );
+}
+pub type newrelic_span_event_config_t = _newrelic_span_event_config_t;
 #[doc = " @brief Configuration used to describe application name, license key, as"]
 #[doc = " well as optional transaction tracer and datastore configuration."]
 #[doc = ""]
@@ -625,18 +672,19 @@ pub type newrelic_process_config_t = _newrelic_process_config_t;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _newrelic_app_config_t {
-    #[doc = " @brief Specifies the name of the application to which data shall be reported."]
+    #[doc = " @brief Specifies the name of the application to which data shall be"]
+    #[doc = " reported."]
     pub app_name: [::std::os::raw::c_char; 255usize],
     #[doc = " @brief Specifies the New Relic license key to use."]
     pub license_key: [::std::os::raw::c_char; 255usize],
-    #[doc = "  @brief Optional.  Specifies the New Relic provided host. There is little reason"]
-    #[doc = "  to ever change this from the default."]
+    #[doc = " @brief Optional. Specifies the New Relic provided host. There is little"]
+    #[doc = " reason to ever change this from the default."]
     pub redirect_collector: [::std::os::raw::c_char; 100usize],
-    #[doc = "  @brief Optional. Specifies the file to be used for C SDK logs."]
+    #[doc = " @brief Optional. Specifies the file to be used for C SDK logs."]
     #[doc = ""]
-    #[doc = "  If no filename is provided, no logging shall occur."]
+    #[doc = " If no filename is provided, no logging shall occur."]
     pub log_filename: [::std::os::raw::c_char; 512usize],
-    #[doc = " @brief Optional. Specifies the logfile\'s level of detail."]
+    #[doc = " @brief Optional. Specifies the logfile's level of detail."]
     #[doc = ""]
     #[doc = " There is little reason to change this from the default value except"]
     #[doc = " in troubleshooting scenarios."]
@@ -644,18 +692,30 @@ pub struct _newrelic_app_config_t {
     #[doc = " Must be one of the following values: NEWRELIC_LOG_ERROR,"]
     #[doc = " NEWRELIC_LOG_WARNING NEWRELIC_LOG_INFO (default), NEWRELIC_LOG_DEBUG."]
     pub log_level: newrelic_loglevel_t,
-    #[doc = "  @brief Optional. The transaction tracer configuration."]
+    #[doc = " @brief Optional. The transaction tracer configuration."]
     #[doc = ""]
-    #[doc = "  By default, the configuration returned by newrelic_new_config()"]
-    #[doc = "  will enable transaction traces, with the threshold set to"]
-    #[doc = "  NEWRELIC_THRESHOLD_IS_APDEX_FAILING."]
+    #[doc = " By default, the configuration returned by newrelic_create_app_config()"]
+    #[doc = " enables transaction traces, with the threshold set to"]
+    #[doc = " NEWRELIC_THRESHOLD_IS_APDEX_FAILING."]
     pub transaction_tracer: newrelic_transaction_tracer_config_t,
-    #[doc = "  @brief Optional. The datastore tracer configuration."]
+    #[doc = " @brief Optional. The datastore tracer configuration."]
     #[doc = ""]
-    #[doc = "  By default, the configuration returned by newrelic_new_config()"]
-    #[doc = "  will enable datastore segments with instance_reporting and"]
-    #[doc = "  database_name_reporting set to true."]
+    #[doc = " By default, the configuration returned by newrelic_create_app_config()"]
+    #[doc = " enables datastore segments with instance_reporting and"]
+    #[doc = " database_name_reporting set to true."]
     pub datastore_tracer: newrelic_datastore_segment_config_t,
+    #[doc = " @brief Optional. Distributed tracing configuration."]
+    #[doc = ""]
+    #[doc = " By default, the configuration returned by newrelic_create_app_config()"]
+    #[doc = " disables the distributed tracing feature by setting"]
+    #[doc = " distributed_tracing.enabled to true."]
+    pub distributed_tracing: newrelic_distributed_tracing_config_t,
+    #[doc = " @brief Optional. Span event configuration."]
+    #[doc = ""]
+    #[doc = " By default, the configuration returned by newrelic_create_app_config()"]
+    #[doc = " enables span event creation for the C SDK by setting span_events.enabled"]
+    #[doc = " to true."]
+    pub span_events: newrelic_span_event_config_t,
 }
 #[test]
 fn bindgen_test_layout__newrelic_app_config_t() {
@@ -753,6 +813,31 @@ fn bindgen_test_layout__newrelic_app_config_t() {
             stringify!(datastore_tracer)
         )
     );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<_newrelic_app_config_t>())).distributed_tracing as *const _
+                as usize
+        },
+        1170usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_newrelic_app_config_t),
+            "::",
+            stringify!(distributed_tracing)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<_newrelic_app_config_t>())).span_events as *const _ as usize
+        },
+        1171usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_newrelic_app_config_t),
+            "::",
+            stringify!(span_events)
+        )
+    );
 }
 pub type newrelic_app_config_t = _newrelic_app_config_t;
 #[doc = " @brief Segment configuration used to instrument calls to databases and object"]
@@ -760,66 +845,67 @@ pub type newrelic_app_config_t = _newrelic_app_config_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _newrelic_datastore_segment_params_t {
-    #[doc = "  @brief Specifies the datastore type, e.g., \"MySQL\", to indicate that the segment"]
-    #[doc = "  represents a query against a MySQL database."]
+    #[doc = " @brief Specifies the datastore type, e.g., \"MySQL\", to indicate that the"]
+    #[doc = " segment represents a query against a MySQL database."]
     #[doc = ""]
-    #[doc = "  New Relic recommends using the predefined NEWRELIC_DATASTORE_FIREBIRD through"]
-    #[doc = "  NEWRELIC_DATASTORE_SYBASE constants for this field. If this field points"]
-    #[doc = "  to a string that is not one of NEWRELIC_DATASTORE_FIREBIRD through"]
-    #[doc = "  NEWRELIC_DATASTORE_SYBASE, the resulting datastore segment shall be"]
-    #[doc = "  instrumented as an unsupported datastore."]
+    #[doc = " New Relic recommends using the predefined NEWRELIC_DATASTORE_FIREBIRD"]
+    #[doc = " through NEWRELIC_DATASTORE_SYBASE constants for this field. If this field"]
+    #[doc = " points to a string that is not one of NEWRELIC_DATASTORE_FIREBIRD through"]
+    #[doc = " NEWRELIC_DATASTORE_SYBASE, the resulting datastore segment shall be"]
+    #[doc = " instrumented as an unsupported datastore."]
     #[doc = ""]
-    #[doc = "  For SQL-like datastores supported by the C SDK, when the"]
-    #[doc = "  record_sql field of the newrelic_transaction_tracer_config_t is set"]
-    #[doc = "  to NEWRELIC_SQL_RAW or NEWRELIC_SQL_OBFUSCATED, the query param of the"]
-    #[doc = "  newrelic_datastore_segment_config_t is reported to New Relic."]
+    #[doc = " For SQL-like datastores supported by the C SDK, when the"]
+    #[doc = " record_sql field of the newrelic_transaction_tracer_config_t is set"]
+    #[doc = " to NEWRELIC_SQL_RAW or NEWRELIC_SQL_OBFUSCATED, the query param of the"]
+    #[doc = " newrelic_datastore_segment_config_t is reported to New Relic."]
     #[doc = ""]
-    #[doc = "  This field is required to be a non-empty, null-terminated string that does"]
-    #[doc = "  not include any slash characters.  Empty strings are replaced with the"]
-    #[doc = "  string NEWRELIC_DATASTORE_OTHER."]
+    #[doc = " This field is required to be a non-empty, null-terminated string that does"]
+    #[doc = " not include any slash characters. Empty strings are replaced with the"]
+    #[doc = " string NEWRELIC_DATASTORE_OTHER."]
     pub product: *mut ::std::os::raw::c_char,
-    #[doc = "  @brief Optional. Specifies the table or collection being used or queried against."]
+    #[doc = " @brief Optional. Specifies the table or collection being used or queried"]
+    #[doc = " against."]
     #[doc = ""]
-    #[doc = "  If provided, this field is required to be a null-terminated string that"]
-    #[doc = "  does not include any slash characters. It is also valid to use the default"]
-    #[doc = "  NULL value, in which case the default string of \"other\" will be attached"]
-    #[doc = "  to the datastore segment."]
+    #[doc = " If provided, this field is required to be a null-terminated string that"]
+    #[doc = " does not include any slash characters. It is also valid to use the default"]
+    #[doc = " NULL value, in which case the default string of \"other\" will be attached"]
+    #[doc = " to the datastore segment."]
     pub collection: *mut ::std::os::raw::c_char,
-    #[doc = "  @brief Optional. Specifies the operation being performed: for example, \"select\""]
-    #[doc = "  for an SQL SELECT query, or \"set\" for a Memcached set operation."]
-    #[doc = "  While operations may be specified with any case, New Relic suggests"]
-    #[doc = "  using lowercase."]
+    #[doc = " @brief Optional. Specifies the operation being performed: for example,"]
+    #[doc = " \"select\" for an SQL SELECT query, or \"set\" for a Memcached set operation."]
+    #[doc = " While operations may be specified with any case, New Relic suggests"]
+    #[doc = " using lowercase."]
     #[doc = ""]
-    #[doc = "  If provided, this field is required to be a null-terminated string that"]
-    #[doc = "  does not include any slash characters. It is also valid to use the default"]
-    #[doc = "  NULL value, in which case the default string of \"other\" will be attached"]
-    #[doc = "  to the datastore segment."]
+    #[doc = " If provided, this field is required to be a null-terminated string that"]
+    #[doc = " does not include any slash characters. It is also valid to use the default"]
+    #[doc = " NULL value, in which case the default string of \"other\" will be attached"]
+    #[doc = " to the datastore segment."]
     pub operation: *mut ::std::os::raw::c_char,
-    #[doc = "  @brief Optional. Specifies the datahost host name."]
+    #[doc = " @brief Optional. Specifies the datahost host name."]
     #[doc = ""]
-    #[doc = "  If provided, this field is required to be a null-terminated string that"]
-    #[doc = "  does not include any slash characters. It is also valid to use the default"]
-    #[doc = "  NULL value, in which case the default string of \"other\" will be attached"]
-    #[doc = "  to the datastore segment."]
+    #[doc = " If provided, this field is required to be a null-terminated string that"]
+    #[doc = " does not include any slash characters. It is also valid to use the default"]
+    #[doc = " NULL value, in which case the default string of \"other\" will be attached"]
+    #[doc = " to the datastore segment."]
     pub host: *mut ::std::os::raw::c_char,
-    #[doc = "  @brief Optional. Specifies the port or socket used to connect to the"]
-    #[doc = "  datastore."]
+    #[doc = " @brief Optional. Specifies the port or socket used to connect to the"]
+    #[doc = " datastore."]
     #[doc = ""]
-    #[doc = "  If provided, this field is required to be a null-terminated string."]
+    #[doc = " If provided, this field is required to be a null-terminated string."]
     pub port_path_or_id: *mut ::std::os::raw::c_char,
-    #[doc = "  @brief Optional. Specifies the database name or number in use."]
+    #[doc = " @brief Optional. Specifies the database name or number in use."]
     #[doc = ""]
-    #[doc = "  If provided, this field is required to be a null-terminated string."]
+    #[doc = " If provided, this field is required to be a null-terminated string."]
     pub database_name: *mut ::std::os::raw::c_char,
-    #[doc = "  @brief Optional. Specifies the database query that was sent to the server."]
+    #[doc = " @brief Optional. Specifies the database query that was sent to the server."]
     #[doc = ""]
-    #[doc = "  For security reasons, this value is only used if you set product to"]
-    #[doc = "  a supported sql-like datastore, NEWRELIC_DATASTORE_FIREBIRD,"]
-    #[doc = "  NEWRELIC_DATASTORE_INFORMIX, NEWRELIC_DATASTORE_MSSQL, etc. This"]
-    #[doc = "  allows the SDK to correctly obfuscate the query. When the product"]
-    #[doc = "  is set otherwise, no query information is reported to New Relic."]
+    #[doc = " For security reasons, this value is only used if you set product to"]
+    #[doc = " a supported sql-like datastore, NEWRELIC_DATASTORE_FIREBIRD,"]
+    #[doc = " NEWRELIC_DATASTORE_INFORMIX, NEWRELIC_DATASTORE_MSSQL, etc. This"]
+    #[doc = " allows the SDK to correctly obfuscate the query. When the product"]
+    #[doc = " is set otherwise, no query information is reported to New Relic."]
     #[doc = ""]
-    #[doc = "  If provided, this field is required to be a null-terminated string."]
+    #[doc = " If provided, this field is required to be a null-terminated string."]
     pub query: *mut ::std::os::raw::c_char,
 }
 #[test]
@@ -937,7 +1023,9 @@ pub type newrelic_datastore_segment_params_t = _newrelic_datastore_segment_param
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _newrelic_external_segment_params_t {
-    #[doc = " @brief The URI that was loaded. This field is required to be a null-terminated"]
+    #[doc = " @brief The URI that was loaded; it cannot be NULL."]
+    #[doc = ""]
+    #[doc = " This field is required to be a null-terminated"]
     #[doc = " string containing a valid URI, and cannot be NULL."]
     pub uri: *mut ::std::os::raw::c_char,
     #[doc = " @brief The procedure used to load the external resource."]
@@ -1015,17 +1103,19 @@ fn bindgen_test_layout__newrelic_external_segment_params_t() {
 }
 pub type newrelic_external_segment_params_t = _newrelic_external_segment_params_t;
 extern "C" {
-    #[doc = " @brief Configure the C SDK\'s logging system."]
+    #[doc = " @brief Configure the C SDK's logging system."]
     #[doc = ""]
     #[doc = " If the logging system was previously initialized (either by a prior call to"]
     #[doc = " newrelic_configure_log() or implicitly by a call to newrelic_init() or"]
     #[doc = " newrelic_create_app()), then invoking this function will close the previous"]
     #[doc = " log file."]
     #[doc = ""]
-    #[doc = " @param [in] filename The path to the file to write logs to. If this is the"]
-    #[doc = " literal string \"stdout\" or \"stderr\", then logs will be written to standard"]
-    #[doc = " output or standard error, respectively."]
-    #[doc = " @param [in] level The lowest level of log message that will be output."]
+    #[doc = " @param [in] filename   The path to the file to write logs to. If this is the"]
+    #[doc = "                        literal string \"stdout\" or \"stderr\", then logs will be"]
+    #[doc = "                        written to standard output or standard error,"]
+    #[doc = "                        respectively."]
+    #[doc = " @param [in] level      The lowest level of log message that will be output."]
+    #[doc = ""]
     #[doc = " @return true on success; false otherwise."]
     pub fn newrelic_configure_log(
         filename: *const ::std::os::raw::c_char,
@@ -1038,7 +1128,18 @@ extern "C" {
     #[doc = " Generally, this function only needs to be called explicitly if the daemon"]
     #[doc = " socket location needs to be customised. By default, \"/tmp/.newrelic.sock\" is"]
     #[doc = " used, which matches the default socket location used by newrelic-daemon if"]
-    #[doc = " one isn\'t given."]
+    #[doc = " one isn't given."]
+    #[doc = ""]
+    #[doc = " The daemon socket location can be specified in four different ways:"]
+    #[doc = ""]
+    #[doc = " - To use a specified file as a UNIX domain socket (UDS), provide an absolute"]
+    #[doc = "    path name as a string."]
+    #[doc = " - To use a standard TCP port, specify a number in the range 1 to 65534."]
+    #[doc = " - To use an abstract socket, prefix the socket name with '@'."]
+    #[doc = " - To connect to a daemon that is running on a different host, set this value"]
+    #[doc = "   to '<host>:<port>', where '<host>' denotes either a host name or an IP"]
+    #[doc = "   address, and '<port>' denotes a valid port number. Both IPv4 and IPv6 are"]
+    #[doc = "   supported."]
     #[doc = ""]
     #[doc = " If an explicit call to this function is required, it must occur before the"]
     #[doc = " first call to newrelic_create_app()."]
@@ -1046,14 +1147,14 @@ extern "C" {
     #[doc = " Subsequent calls to this function after a successful call to newrelic_init()"]
     #[doc = " or newrelic_create_app() will fail."]
     #[doc = ""]
-    #[doc = " @param [in] daemon_socket The path to the daemon socket. On Linux, if this"]
-    #[doc = " starts with a literal \'@\', then this is treated as the name of an abstract"]
-    #[doc = " domain socket instead of a filesystem path. If this is NULL, then the"]
-    #[doc = " default behaviour described above will be used."]
-    #[doc = " @param [in] time_limit_ms The amount of time, in milliseconds, that the C"]
-    #[doc = " SDK will wait for a response from the daemon before considering"]
-    #[doc = " initialization to have failed. If this is 0, then a default value will be"]
-    #[doc = " used."]
+    #[doc = " @param [in] daemon_socket  The path to the daemon socket. If this is NULL,"]
+    #[doc = "                            then the default will be used, which is to look"]
+    #[doc = "                            for a UNIX domain socket at /tmp/.newrelic.sock."]
+    #[doc = " @param [in] time_limit_ms  The amount of time, in milliseconds, that the C"]
+    #[doc = "                            SDK will wait for a response from the daemon"]
+    #[doc = "                            before considering initialization to have failed."]
+    #[doc = "                            If this is 0, then a default value will be used."]
+    #[doc = ""]
     #[doc = " @return true on success; false otherwise."]
     pub fn newrelic_init(
         daemon_socket: *const ::std::os::raw::c_char,
@@ -1066,8 +1167,9 @@ extern "C" {
     #[doc = " Given an application name and license key, this method returns an SDK"]
     #[doc = " configuration. Specifically, it returns a pointer to a newrelic_app_config_t"]
     #[doc = " with initialized app_name and license_key fields along with default values"]
-    #[doc = " for the remaining fields. The caller should free the configuration"]
-    #[doc = " after the application has been created."]
+    #[doc = " for the remaining fields. After the application has been created with"]
+    #[doc = " newrelic_create_app(), the caller should free the configuration using"]
+    #[doc = " newrelic_destroy_app_config()."]
     #[doc = ""]
     #[doc = " @param [in] app_name The name of the application."]
     #[doc = " @param [in] license_key A valid license key supplied by New Relic."]
@@ -1091,7 +1193,7 @@ extern "C" {
     #[doc = " @return false if config is NULL or points to NULL; true otherwise."]
     #[doc = ""]
     #[doc = " @warning This function must only be called once for a given application"]
-    #[doc = "          configuration."]
+    #[doc = " configuration."]
     pub fn newrelic_destroy_app_config(config: *mut *mut newrelic_app_config_t) -> bool;
 }
 extern "C" {
@@ -1102,11 +1204,11 @@ extern "C" {
     #[doc = " the caller should destroy the application with the supplied"]
     #[doc = " newrelic_destroy_app() when finished."]
     #[doc = ""]
-    #[doc = " @param [in] config An application configuration created by"]
-    #[doc = " newrelic_create_app_config()."]
+    #[doc = " @param [in] config     An application configuration created by"]
+    #[doc = "                        newrelic_create_app_config()."]
     #[doc = " @param [in] timeout_ms Specifies the maximum time to wait for a connection to"]
-    #[doc = " be established; a value of 0 causes the method to make only one attempt at"]
-    #[doc = " connecting to the daemon."]
+    #[doc = "                        be established; a value of 0 causes the method to make"]
+    #[doc = "                        only one attempt at connecting to the daemon."]
     #[doc = ""]
     #[doc = " @return A pointer to an allocated application, or NULL on error; any errors"]
     #[doc = " resulting from a badly-formed configuration are logged."]
@@ -1133,7 +1235,7 @@ extern "C" {
     #[doc = ""]
     #[doc = " Given an application pointer and transaction name, this function begins"]
     #[doc = " timing a new transaction. It returns a valid pointer to an active New Relic"]
-    #[doc = " transaction, newrelic_txn_t.  The return value of this function may be"]
+    #[doc = " transaction, newrelic_txn_t. The return value of this function may be"]
     #[doc = " used as an input parameter to functions that modify an active transaction."]
     #[doc = ""]
     #[doc = " @param [in] app A pointer to an allocation application."]
@@ -1170,8 +1272,8 @@ extern "C" {
     #[doc = " times given instead."]
     #[doc = ""]
     #[doc = " Note that this may cause unusual looking transaction traces. This function"]
-    #[doc = " manually alters a transaction\'s start time and duration, but it does not"]
-    #[doc = " alter any timing for the segments belonging to the transaction.  As a result,"]
+    #[doc = " manually alters a transaction's start time and duration, but it does not"]
+    #[doc = " alter any timing for the segments belonging to the transaction. As a result,"]
     #[doc = " the sum of all segment durations may be substantively greater or less than"]
     #[doc = " the total duration of the transaction."]
     #[doc = ""]
@@ -1183,7 +1285,7 @@ extern "C" {
     #[doc = "                            since the UNIX Epoch."]
     #[doc = " @param [in] duration       The duration of the transaction in microseconds."]
     #[doc = ""]
-    #[doc = " @return True if the segment timing was changed; false otherwise."]
+    #[doc = " @return true if the segment timing was changed; false otherwise."]
     pub fn newrelic_set_transaction_timing(
         transaction: *mut newrelic_txn_t,
         start_time: newrelic_time_us_t,
@@ -1193,10 +1295,11 @@ extern "C" {
 extern "C" {
     #[doc = " @brief End a transaction."]
     #[doc = ""]
-    #[doc = " Given an active transaction, this function stops the transaction\'s"]
+    #[doc = " Given an active transaction, this function stops the transaction's"]
     #[doc = " timing, sends any data to the New Relic daemon, and destroys the transaction."]
     #[doc = ""]
-    #[doc = " @param [in] transaction_ptr The address of a pointer to an active transaction."]
+    #[doc = " @param [in] transaction_ptr  The address of a pointer to an active"]
+    #[doc = "                              transaction."]
     #[doc = ""]
     #[doc = " @return false if transaction is NULL or points to NULL; false if data cannot"]
     #[doc = " be sent to newrelic; true otherwise."]
@@ -1278,10 +1381,13 @@ extern "C" {
     #[doc = " Given an active transaction, this function records an error"]
     #[doc = " inside of the transaction."]
     #[doc = ""]
-    #[doc = " @param [in] transaction An active transaction."]
-    #[doc = " @param [in] priority The error\'s priority."]
-    #[doc = " @param [in] errmsg A string comprising the error message."]
-    #[doc = " @param [in] errclass A string comprising the error class."]
+    #[doc = " @param [in]  transaction An active transaction."]
+    #[doc = " @param [in]  priority The error's priority. The C SDK sends up one error per"]
+    #[doc = "              transaction.  If multiple calls to this function are made during"]
+    #[doc = "              a single transaction, the error with the highest priority is"]
+    #[doc = "              reported to New Relic."]
+    #[doc = " @param [in]  errmsg A string comprising the error message."]
+    #[doc = " @param [in]  errclass A string comprising the error class."]
     pub fn newrelic_notice_error(
         transaction: *mut newrelic_txn_t,
         priority: ::std::os::raw::c_int,
@@ -1294,12 +1400,16 @@ extern "C" {
 pub struct _newrelic_segment_t {
     _unused: [u8; 0],
 }
-#[doc = " @brief A segment within a transaction.  Within an active transaction,"]
-#[doc = " instrument additional segments for greater granularity.  Instrument"]
-#[doc = " external calls with newrelic_start_external_segment().  Instrument"]
-#[doc = " datastore calls with newrelic_start_datastore_segment().  Instrument"]
-#[doc = " arbitrary function calls or other code with newrelic_start_segment()."]
-#[doc = " All segments must be ended with newrelic_end_segment().  Examples of"]
+#[doc = " @brief A segment within a transaction."]
+#[doc = ""]
+#[doc = " Within an active transaction, instrument additional segments for greater"]
+#[doc = " granularity."]
+#[doc = ""]
+#[doc = " -For external calls:   newrelic_start_external_segment()."]
+#[doc = " -For datastore calls:  newrelic_start_datastore_segment()."]
+#[doc = " -For arbitrary code:   newrelic_start_segment()."]
+#[doc = ""]
+#[doc = " All segments must be ended with newrelic_end_segment(). Examples of"]
 #[doc = " instrumenting segments are available in the examples directory."]
 pub type newrelic_segment_t = _newrelic_segment_t;
 #[repr(C)]
@@ -1307,9 +1417,10 @@ pub type newrelic_segment_t = _newrelic_segment_t;
 pub struct _newrelic_custom_event_t {
     _unused: [u8; 0],
 }
-#[doc = " @brief A Custom Event. The C SDK provides a Custom Events API"]
-#[doc = " that allows one to send custom events to New Relic Insights."]
-#[doc = " To send an event, start a transaction and use the"]
+#[doc = " @brief A Custom Event."]
+#[doc = ""]
+#[doc = " The C SDK provides a Custom Events API that allows one to send custom events"]
+#[doc = " to New Relic Insights. To send an event, start a transaction and use the"]
 #[doc = " newrelic_create_custom_event() and newrelic_record_custom_event()"]
 #[doc = " functions. Examples of sending custom events are available in the"]
 #[doc = " examples directory."]
@@ -1321,11 +1432,11 @@ extern "C" {
     #[doc = " recorded as part of the transaction. A subsequent call to"]
     #[doc = " newrelic_end_segment() records the end of the segment."]
     #[doc = ""]
-    #[doc = " @param [in] transaction An active transaction."]
-    #[doc = " @param [in] name The segment name. If NULL or an invalid name is passed,"]
-    #[doc = " this defaults to \"Unnamed segment\"."]
-    #[doc = " @param [in] category The segment category. If NULL or an invalid category is"]
-    #[doc = " passed, this defaults to \"Custom\"."]
+    #[doc = " @param [in] transaction  An active transaction."]
+    #[doc = " @param [in] name         The segment name. If NULL or an invalid name is"]
+    #[doc = "                          passed, this defaults to \"Unnamed segment\"."]
+    #[doc = " @param [in] category     The segment category. If NULL or an invalid"]
+    #[doc = "                          category is passed, this defaults to \"Custom\"."]
     #[doc = ""]
     #[doc = " @return A pointer to a valid custom segment; NULL otherwise."]
     #[doc = ""]
@@ -1364,6 +1475,7 @@ extern "C" {
     #[doc = "                         parameters are copied, and no references to the"]
     #[doc = "                         pointers provided are kept after this function"]
     #[doc = "                         returns."]
+    #[doc = ""]
     #[doc = " @return A pointer to an external segment, which may then be provided to"]
     #[doc = "         newrelic_end_segment() when the external request is complete. If an"]
     #[doc = "         error occurs when creating the external segment, NULL is returned,"]
@@ -1382,33 +1494,34 @@ extern "C" {
     #[doc = ""]
     #[doc = " @param [in] segment The segment to reparent."]
     #[doc = " @param [in] parent  The new parent segment."]
-    #[doc = " @return True if the segment was successfully reparented; false otherwise."]
+    #[doc = ""]
+    #[doc = " @return true if the segment was successfully reparented; false otherwise."]
     #[doc = ""]
     #[doc = " @warning Do not attempt to use a segment that has had newrelic_end_segment()"]
-    #[doc = "          called on it as a segment or parent: this will result in a"]
-    #[doc = "          use-after-free scenario, and likely a crash."]
+    #[doc = " called on it as a segment or parent: this will result in a use-after-free"]
+    #[doc = " scenario, and likely a crash."]
     pub fn newrelic_set_segment_parent(
         segment: *mut newrelic_segment_t,
         parent: *mut newrelic_segment_t,
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Set the transaction\'s root as the parent for the given segment."]
+    #[doc = " @brief Set the transaction's root as the parent for the given segment."]
     #[doc = ""]
     #[doc = " Transactions are represented by a collection of segments. Segments are"]
     #[doc = " created by calls to newrelic_start_segment(),"]
     #[doc = " newrelic_start_datastore_segment() and newrelic_start_external_segment()."]
     #[doc = " In addition, a transaction has an automatically-created root segment that"]
     #[doc = " represents the entrypoint of the transaction. In some cases, users may want"]
-    #[doc = " to manually parent their segments with the transaction\'s root segment."]
+    #[doc = " to manually parent their segments with the transaction's root segment."]
     #[doc = ""]
     #[doc = " @param [in] segment  The segment to be parented."]
     #[doc = ""]
-    #[doc = " @return True if the segment was successfully reparented; false otherwise."]
+    #[doc = " @return true if the segment was successfully reparented; false otherwise."]
     #[doc = ""]
     #[doc = " @warning Do not attempt to use a segment that has had newrelic_end_segment()"]
-    #[doc = "          called on it as a segment or parent: this will result in a"]
-    #[doc = "          use-after-free scenario, and likely a crash."]
+    #[doc = " called on it as a segment or parent: this will result in a use-after-free"]
+    #[doc = " scenario, and likely a crash."]
     pub fn newrelic_set_segment_parent_root(segment: *mut newrelic_segment_t) -> bool;
 }
 extern "C" {
@@ -1427,7 +1540,8 @@ extern "C" {
     #[doc = " @param [in] start_time The start time for the segment, in microseconds since"]
     #[doc = "                        the start of the transaction."]
     #[doc = " @param [in] duration   The duration of the segment in microseconds."]
-    #[doc = " @return True if the segment timing was changed; false otherwise."]
+    #[doc = ""]
+    #[doc = " @return true if the segment timing was changed; false otherwise."]
     pub fn newrelic_set_segment_timing(
         segment: *mut newrelic_segment_t,
         start_time: newrelic_time_us_t,
@@ -1437,7 +1551,7 @@ extern "C" {
 extern "C" {
     #[doc = " @brief Record the completion of a segment in a transaction."]
     #[doc = ""]
-    #[doc = " Given an active transaction, this function records the segment\'s metrics"]
+    #[doc = " Given an active transaction, this function records the segment's metrics"]
     #[doc = " on the transaction."]
     #[doc = ""]
     #[doc = " @param [in] transaction An active transaction."]
@@ -1463,7 +1577,7 @@ extern "C" {
     #[doc = " newrelic_record_custom_event()."]
     #[doc = ""]
     #[doc = " When passed to newrelic_record_custom_event, the custom event will be freed."]
-    #[doc = " If you can\'t pass an allocated event to newrelic_record_custom_event, use the"]
+    #[doc = " If you can't pass an allocated event to newrelic_record_custom_event, use the"]
     #[doc = " newrelic_discard_custom_event function to free the event."]
     #[doc = ""]
     #[doc = " @param [in] event_type The type/name of the event"]
@@ -1477,12 +1591,12 @@ extern "C" {
     #[doc = " @brief Frees the memory for custom events created via the"]
     #[doc = " newrelic_create_custom_event function"]
     #[doc = ""]
-    #[doc = " This function is here in case there\'s an allocated newrelic_custom_event_t"]
+    #[doc = " This function is here in case there's an allocated newrelic_custom_event_t"]
     #[doc = " that ends up not being recorded as a custom event, but still needs to be"]
     #[doc = " freed"]
     #[doc = ""]
-    #[doc = " @param [in] event The address of a valid custom event, @see"]
-    #[doc = "             newrelic_create_custom_event()."]
+    #[doc = " @param [in] event The address of a valid custom event created by"]
+    #[doc = " newrelic_create_custom_event()."]
     pub fn newrelic_discard_custom_event(event: *mut *mut newrelic_custom_event_t);
 }
 extern "C" {
@@ -1491,9 +1605,9 @@ extern "C" {
     #[doc = " Given an active transaction, this function adds the custom event to the"]
     #[doc = " transaction and timestamps it, ensuring the event will be sent to New Relic."]
     #[doc = ""]
-    #[doc = " @param [in] transaction pointer to a started transaction"]
-    #[doc = " @param [in] event The address of a valid custom event, @see"]
-    #[doc = "                   newrelic_create_custom_event()."]
+    #[doc = " @param [in] transaction An active transaction"]
+    #[doc = " @param [in] event The address of a valid custom event created by"]
+    #[doc = "             newrelic_create_custom_event()"]
     #[doc = ""]
     #[doc = " newrelic_create_custom_event"]
     pub fn newrelic_record_custom_event(
@@ -1502,11 +1616,11 @@ extern "C" {
     );
 }
 extern "C" {
-    #[doc = " @brief Adds an int key/value pair to the custom event\'s attributes"]
+    #[doc = " @brief Adds an int key/value pair to the custom event's attributes"]
     #[doc = ""]
     #[doc = " Given a custom event, this function adds an integer attributes to the event."]
     #[doc = ""]
-    #[doc = " @param [in] event A valid custom event, @see newrelic_create_custom_event()."]
+    #[doc = " @param [in] event A valid custom event, @see newrelic_create_custom_event()"]
     #[doc = " @param [in] key the string key for the key/value pair"]
     #[doc = " @param [in] value the integer value of the key/value pair"]
     #[doc = ""]
@@ -1518,11 +1632,12 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Adds a long key/value pair to the custom event\'s attributes"]
+    #[doc = " @brief Adds a long key/value pair to the custom event's attributes"]
     #[doc = ""]
     #[doc = " Given a custom event, this function adds a long attribute to the event."]
     #[doc = ""]
-    #[doc = " @param [in] event A valid custom event, @see newrelic_create_custom_event()."]
+    #[doc = " @param [in] event A valid custom event created by"]
+    #[doc = " newrelic_create_custom_event()"]
     #[doc = " @param [in] key the string key for the key/value pair"]
     #[doc = " @param [in] value the long value of the key/value pair"]
     #[doc = ""]
@@ -1534,11 +1649,12 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Adds a double key/value pair to the custom event\'s attributes"]
+    #[doc = " @brief Adds a double key/value pair to the custom event's attributes"]
     #[doc = ""]
     #[doc = " Given a custom event, this function adds a double attribute to the event."]
     #[doc = ""]
-    #[doc = " @param [in] event A valid custom event, @see newrelic_create_custom_event()."]
+    #[doc = " @param [in] event A valid custom event created by"]
+    #[doc = " newrelic_create_custom_event()"]
     #[doc = " @param [in] key the string key for the key/value pair"]
     #[doc = " @param [in] value the double value of the key/value pair"]
     #[doc = ""]
@@ -1550,12 +1666,13 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
-    #[doc = " @brief Adds a string key/value pair to the custom event\'s attributes"]
+    #[doc = " @brief Adds a string key/value pair to the custom event's attributes"]
     #[doc = ""]
     #[doc = " Given a custom event, this function adds a char* (string) attribute to the"]
     #[doc = " event."]
     #[doc = ""]
-    #[doc = " @param [in] event A valid custom event, @see newrelic_create_custom_event()."]
+    #[doc = " @param [in] event A valid custom event created by"]
+    #[doc = " newrelic_create_custom_event()."]
     #[doc = " @param [in] key the string key for the key/value pair"]
     #[doc = " @param [in] value the string value of the key/value pair"]
     #[doc = ""]
@@ -1573,7 +1690,7 @@ extern "C" {
     #[doc = " the version number is unavailable, the string \"NEWRELIC_VERSION\" will be"]
     #[doc = " returned."]
     #[doc = ""]
-    #[doc = " This string is owned by the SDK, and must not be freed or modified."]
+    #[doc = " @warning This string is owned by the SDK, and must not be freed or modified."]
     pub fn newrelic_version() -> *const ::std::os::raw::c_char;
 }
 extern "C" {
@@ -1604,8 +1721,115 @@ extern "C" {
     #[doc = " call newrelic_end_transaction() to free the memory used by the transaction"]
     #[doc = " and avoid a memory leak."]
     #[doc = ""]
-    #[doc = " @param [in] transaction A transaction."]
+    #[doc = " @param [in] transaction An active transaction."]
     #[doc = ""]
     #[doc = " @return true on success."]
     pub fn newrelic_ignore_transaction(transaction: *mut newrelic_txn_t) -> bool;
+}
+extern "C" {
+    #[doc = " @brief Create a distributed trace payload."]
+    #[doc = ""]
+    #[doc = " Create a newrelic header, or a payload, to add to a service's outbound"]
+    #[doc = " requests. This header contains the metadata necessary to link spans together"]
+    #[doc = " for a complete distributed trace. The metadata includes: the trace ID number,"]
+    #[doc = " the span ID number, New Relic account ID number, and sampling information."]
+    #[doc = " Note that a payload must be created within an active transaction."]
+    #[doc = ""]
+    #[doc = " @param [in] transaction    An active transaction. This value cannot be NULL."]
+    #[doc = " @param [in] segment        An active segment in which the distributed trace"]
+    #[doc = "                            payload is being created, or NULL to indicate"]
+    #[doc = "                            that the payload is created for the root"]
+    #[doc = "                            segment."]
+    #[doc = ""]
+    #[doc = " @return If successful, a string to manually add to a service's outbound"]
+    #[doc = " requests. If the instrumented application has not established a connection"]
+    #[doc = " to the daemon or if distributed tracing is not enabled in the"]
+    #[doc = " newrelic_app_config_t, this function returns NULL. The caller is responsible"]
+    #[doc = " for invoking free() on the returned string."]
+    pub fn newrelic_create_distributed_trace_payload(
+        transaction: *mut newrelic_txn_t,
+        segment: *mut newrelic_segment_t,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    #[doc = " @brief Accept a distributed trace payload."]
+    #[doc = ""]
+    #[doc = " Accept newrelic headers, or a payload, created with"]
+    #[doc = " newrelic_create_distributed_trace_payload(). Such headers are manually added"]
+    #[doc = " to a service's outbound request. The receiving service gets the newrelic"]
+    #[doc = " header from the incoming request and uses this function to accept the payload"]
+    #[doc = " and link corresponding spans together for a complete distributed trace. Note"]
+    #[doc = " that a payload must be accepted within an active transaction."]
+    #[doc = ""]
+    #[doc = " @param [in] transaction    An active transaction. This value cannot be NULL."]
+    #[doc = " @param [in] payload        A string created by"]
+    #[doc = "                            newrelic_create_distributed_trace_payload()."]
+    #[doc = "                            This value cannot be NULL."]
+    #[doc = " @param [in] transport_type Transport type used for communicating the external"]
+    #[doc = "                            call. It is strongly recommended that one of"]
+    #[doc = "                            NEWRELIC_TRANSPORT_TYPE_UNKNOWN"]
+    #[doc = "                            through NEWRELIC_TRANSPORT_TYPE_OTHER are used"]
+    #[doc = "                            for this value.  If NULL is supplied for this"]
+    #[doc = "                            parameter, an info-level message is logged and"]
+    #[doc = "                            the default value of"]
+    #[doc = "                            NEWRELIC_TRANSPORT_TYPE_UNKNOWN is used."]
+    #[doc = ""]
+    #[doc = " @return true on success."]
+    pub fn newrelic_accept_distributed_trace_payload(
+        transaction: *mut newrelic_txn_t,
+        payload: *const ::std::os::raw::c_char,
+        transport_type: *const ::std::os::raw::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = " @brief Create a distributed trace payload, an http-safe, base64-encoded"]
+    #[doc = " string."]
+    #[doc = ""]
+    #[doc = " This function offers the same behaviour as"]
+    #[doc = " newrelic_create_distributed_trace_payload() but creates a base64-encoded"]
+    #[doc = " string for the payload. The caller is responsible for invoking free()"]
+    #[doc = " on the returned string."]
+    #[doc = ""]
+    #[doc = " @see newrelic_create_distributed_trace_payload()"]
+    #[doc = ""]
+    pub fn newrelic_create_distributed_trace_payload_httpsafe(
+        transaction: *mut newrelic_txn_t,
+        segment: *mut newrelic_segment_t,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    #[doc = " @brief Accept a distributed trace payload, an http-safe, base64-encoded"]
+    #[doc = " string."]
+    #[doc = ""]
+    #[doc = " This function offers the same behaviour as"]
+    #[doc = " newrelic_accept_distributed_trace_payload() but accepts a base64-encoded"]
+    #[doc = " string for the payload."]
+    #[doc = ""]
+    #[doc = " @see newrelic_accept_distributed_trace_payload()"]
+    #[doc = ""]
+    pub fn newrelic_accept_distributed_trace_payload_httpsafe(
+        transaction: *mut newrelic_txn_t,
+        payload: *const ::std::os::raw::c_char,
+        transport_type: *const ::std::os::raw::c_char,
+    ) -> bool;
+}
+extern "C" {
+    #[doc = " @brief Set a transaction name"]
+    #[doc = ""]
+    #[doc = " Given an active transaction and a name, this function sets the transaction"]
+    #[doc = " name to the given name."]
+    #[doc = ""]
+    #[doc = " @param [in] transaction  An active transaction."]
+    #[doc = " @param [in] name         Name for the transaction."]
+    #[doc = ""]
+    #[doc = " @return true on success."]
+    #[doc = ""]
+    #[doc = " @warning Do not use brackets [] at the end of your transaction name."]
+    #[doc = " New Relic automatically strips brackets from the name. Instead, use"]
+    #[doc = " parentheses () or other symbols if needed."]
+    #[doc = ""]
+    pub fn newrelic_set_transaction_name(
+        transaction: *mut newrelic_txn_t,
+        transaction_name: *const ::std::os::raw::c_char,
+    ) -> bool;
 }
