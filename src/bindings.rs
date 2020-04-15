@@ -1395,6 +1395,29 @@ extern "C" {
         errclass: *const ::std::os::raw::c_char,
     );
 }
+extern "C" {
+    #[doc = " @brief Record an error in a transaction, passing a custom stacktrace"]
+    #[doc = ""]
+    #[doc = " Given an active transaction, this function records an error"]
+    #[doc = " inside of the transaction. A custom stacktrace must be passed as a string"]
+    #[doc = " in JSON format like: \"[\\\"first line\\\",\\\"second line\\\",\\\"third line\\\"]\""]
+    #[doc = ""]
+    #[doc = " @param [in]  transaction An active transaction."]
+    #[doc = " @param [in]  priority The error's priority. The C SDK sends up one error per"]
+    #[doc = "              transaction.  If multiple calls to this function are made during"]
+    #[doc = "              a single transaction, the error with the highest priority is"]
+    #[doc = "              reported to New Relic."]
+    #[doc = " @param [in]  errmsg A string comprising the error message."]
+    #[doc = " @param [in]  errclass A string comprising the error class."]
+    #[doc = " @param [in]  errstacktrace A string comprising the error stacktrace, in NewRelic's JSON format."]
+    pub fn newrelic_notice_error_with_stacktrace(
+        transaction: *mut newrelic_txn_t,
+        priority: ::std::os::raw::c_int,
+        errmsg: *const ::std::os::raw::c_char,
+        errclass: *const ::std::os::raw::c_char,
+        errstacktrace: *const ::std::os::raw::c_char,
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _newrelic_segment_t {

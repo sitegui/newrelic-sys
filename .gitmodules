@@ -1,6 +1,6 @@
 [submodule "vendor/c-sdk"]
 	path = vendor/c-sdk
-	url = https://github.com/newrelic/c-sdk
+	url = https://github.com/sitegui/c-sdk
 [submodule "vendor"]
 	path = vendor
-	url = https://github.com/newrelic/c-sdk
+	url = https://github.com/sitegui/c-sdk
